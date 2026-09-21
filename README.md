@@ -1,36 +1,37 @@
 # KruigerRestrictions
 
-A standalone FiveM resource that provides ACE-based restrictions for vehicles, weapons, and player ped models.
+A standalone FiveM resource providing configurable ACE-based restrictions for vehicles, weapons, player ped models, and clothing.
+
+## v2.0.0
+
+KruigerRestrictions v2 adds ACE-protected clothing restrictions for freemode male and female characters.
 
 ## Features
 
 - Vehicle model restrictions
 - Weapon restrictions
 - Ped model restrictions
+- Clothing component restrictions
+- Clothing prop restrictions
+- Separate male/female clothing configuration
+- Restrict a specific texture or every texture for a drawable
 - Standard FiveM ACE permissions
 - Multiple allowed permissions per restricted item
 - Custom denial messages
-- Configurable vehicle ejection/deletion
-- Configurable weapon removal
-- Configurable fallback ped
 - Server-side ACE permission checks
+- Independently enable/disable restriction modules
 - No ESX or QBCore required
 - No dependencies
 
-A player only needs **one** of the permissions listed for a restricted item.
+A player only needs **one** permission listed on a restricted item.
 
 ## Installation
 
 1. Place `KruigerRestrictions` in your server's resources folder.
-2. Add this to `server.cfg`:
-
-```cfg
-ensure KruigerRestrictions
-```
-
-3. Configure the restriction files in `config/`.
-4. Grant the required ACE permissions.
-5. Restart the resource/server.
+2. Add `ensure KruigerRestrictions` to `server.cfg`.
+3. Configure the files inside `config/`.
+4. Add the required ACE permissions.
+5. Restart the resource or server.
 
 ## ACE Examples
 
@@ -38,54 +39,55 @@ ensure KruigerRestrictions
 add_ace group.leo kruiger.vehicle.leo allow
 add_ace group.leo kruiger.weapon.leo allow
 add_ace group.leo kruiger.ped.leo allow
+add_ace group.leo kruiger.clothing.leo allow
 
 add_ace group.swat kruiger.weapon.rifle allow
 add_ace group.swat kruiger.ped.swat allow
-
-add_ace group.admin kruiger.vehicle.admin allow
-add_ace group.admin kruiger.ped.admin allow
+add_ace group.swat kruiger.clothing.swat allow
 ```
 
-Any permission system that grants standard FiveM ACE permissions can be used.
+## Clothing Restrictions
 
-## Vehicle Restrictions
+Configure clothing in `config/clothing.lua`.
 
-Edit `config/vehicles.lua`:
+Components and props are separated, with independent sections for `mp_m_freemode_01` and `mp_f_freemode_01`.
+
+Example component:
 
 ```lua
-[`police`] = {
-    permissions = { 'kruiger.vehicle.leo' },
-    message = 'This vehicle is restricted to authorized law enforcement.'
+{
+    component = 9,
+    drawable = 15,
+    texture = -1,
+    permissions = { 'kruiger.clothing.leo' },
+    message = 'You are not authorized to use this vest.'
 }
 ```
 
-## Weapon Restrictions
-
-Edit `config/weapons.lua`:
+Example prop:
 
 ```lua
-[`WEAPON_CARBINERIFLE`] = {
-    permissions = { 'kruiger.weapon.rifle', 'kruiger.weapon.leo' },
-    message = 'You are not authorized to use this rifle.'
+{
+    prop = 0,
+    drawable = 46,
+    texture = -1,
+    permissions = { 'kruiger.clothing.leo' }
 }
 ```
 
-## Ped Restrictions
+Set `texture = -1` to restrict every texture for that drawable, or enter a texture ID to restrict only that variation.
 
-Edit `config/peds.lua`:
+Unauthorized restricted components are reset to their default component variation. Unauthorized restricted props are removed.
 
-```lua
-[`s_m_y_cop_01`] = {
-    permissions = { 'kruiger.ped.leo' },
-    message = 'This ped is restricted to authorized law enforcement.'
-}
+## Configuration Files
+
+```text
+config/config.lua
+config/vehicles.lua
+config/weapons.lua
+config/peds.lua
+config/clothing.lua
 ```
-
-## Configuration
-
-The main settings are in `config/config.lua`.
-
-You can enable/disable each restriction module independently and configure what happens when a player attempts to use a restricted vehicle, weapon, or ped.
 
 ## License
 

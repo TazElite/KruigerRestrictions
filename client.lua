@@ -166,13 +166,91 @@ local function handlePed(ped)
     end)
 end
 
+local clothingState = {}
+local clothingBusy = {}
+
+local function clothingGroup(ped)
+    local model = GetEntityModel(ped)
+    if model == `mp_m_freemode_01` then return RestrictedClothing.male end
+    if model == `mp_f_freemode_01` then return RestrictedClothing.female end
+    return nil
+end
+
+local function matchesTexture(required, actual)
+    return required == nil or required == -1 or required == actual
+end
+
+local function handleClothing(ped)
+    if not Config.ClothingRestrictions then return end
+
+    local group = clothingGroup(ped)
+    if not group then return end
+
+    for index, entry in ipairs(group.components or {}) do
+        local drawable = GetPedDrawableVariation(ped, entry.component)
+        local texture = GetPedTextureVariation(ped, entry.component)
+        local key = ('component:%s:%s'):format(entry.component, index)
+        local matched = drawable == entry.drawable and matchesTexture(entry.texture, texture)
+
+        if matched and clothingState[key] ~= (('%s:%s'):format(drawable, texture)) and not clothingBusy[key] then
+            clothingBusy[key] = true
+            checkPermissions(entry.permissions, function(allowed)
+                clothingBusy[key] = nil
+                if allowed then
+                    clothingState[key] = ('%s:%s'):format(drawable, texture)
+                    return
+                end
+
+                notify(entry.message or Config.Clothing.Message)
+                -- Reset only the restricted component to the freemode default.
+                SetPedComponentVariation(ped, entry.component, 0, 0, 0)
+                clothingState[key] = nil
+            end)
+        elseif not matched then
+            clothingState[key] = nil
+        end
+    end
+
+    for index, entry in ipairs(group.props or {}) do
+        local drawable = GetPedPropIndex(ped, entry.prop)
+        local texture = GetPedPropTextureIndex(ped, entry.prop)
+        local key = ('prop:%s:%s'):format(entry.prop, index)
+        local matched = drawable == entry.drawable and matchesTexture(entry.texture, texture)
+
+        if matched and clothingState[key] ~= (('%s:%s'):format(drawable, texture)) and not clothingBusy[key] then
+            clothingBusy[key] = true
+            checkPermissions(entry.permissions, function(allowed)
+                clothingBusy[key] = nil
+                if allowed then
+                    clothingState[key] = ('%s:%s'):format(drawable, texture)
+                    return
+                end
+
+                notify(entry.message or Config.Clothing.Message)
+                ClearPedProp(ped, entry.prop)
+                clothingState[key] = nil
+            end)
+        elseif not matched then
+            clothingState[key] = nil
+        end
+    end
+end
+
 CreateThread(function()
+    local lastClothingCheck = 0
+
     while true do
         local ped = PlayerPedId()
 
         handleVehicle(ped)
         handleWeapon(ped)
         handlePed(ped)
+
+        local now = GetGameTimer()
+        if now - lastClothingCheck >= (Config.Clothing.CheckInterval or 1000) then
+            handleClothing(ped)
+            lastClothingCheck = now
+        end
 
         Wait(Config.CheckInterval)
     end
