@@ -1,3 +1,5 @@
+![KruigerRestrictions](assets/banner.png)
+
 # KruigerRestrictions
 
 A standalone FiveM resource providing configurable ACE-based restrictions for vehicles, weapons, player ped models, and clothing.
