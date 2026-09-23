@@ -96,3 +96,18 @@ config/clothing.lua
 Released under the MIT License.
 
 Copyright (c) 2026 KruigerLabs
+
+## 📚 Documentation
+
+For complete installation, configuration, commands, permissions, usage, and troubleshooting, see the official Kruiger Labs documentation.
+
+**📖 Full Documentation:**  
+https://kruigerlabs.xyz/docs/free-scripts/kruigerrestrictions
+
+**📚 Documentation Center:**  
+https://kruigerlabs.xyz/docs/
+
+**❓ FAQ:**  
+https://kruigerlabs.xyz/docs/faq
+
+> For the most up-to-date setup instructions, always refer to the Kruiger Labs Documentation Center.
