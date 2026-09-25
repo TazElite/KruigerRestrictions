@@ -1,9 +1,9 @@
 fx_version 'cerulean'
 game 'gta5'
 
-author 'KruigerLabs'
+author 'Kruiger Labs LLC'
 name 'KruigerRestrictions'
-description 'Standalone ACE-based vehicle, weapon, and ped restrictions for FiveM.'
+description 'Free standalone FiveM restrictions script for vehicles, weapons, peds, and clothing using ACE permissions.'
 version '2.0.0'
 
 shared_scripts {
