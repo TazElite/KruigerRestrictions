@@ -39,3 +39,7 @@ add_ace group.leo kruiger.clothing.leo allow
 
 ## License
 Licensed under the **Kruiger Labs Community License v1.0**. See `LICENSE` for complete terms. Copyright © 2026 Kruiger Labs LLC.
+
+## Kruiger Labs
+
+**Project Page:** https://kruigerlabs.xyz/projects/KruigerRestrictions/
